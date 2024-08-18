@@ -36,7 +36,7 @@ public class ProdutoService {
         return produtoRepository.findById(produtoId).orElseThrow(() -> new NotFoundException("Produto não encontrado"));
     }
 
-    public List<Produto> listarProduto(){
+    public List<Produto> listarProdutos(){
         return produtoRepository.findAll();
     }
 }
