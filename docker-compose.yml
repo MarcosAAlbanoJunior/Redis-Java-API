@@ -1,0 +1,43 @@
+version: '3.8'
+services:
+  app:
+    image: 'eclipse-temurin:21-jdk'  # Usando a imagem do JDK 21
+    container_name: spring-boot-app
+    working_dir: /app
+    volumes:
+      - .:/app
+      - ~/.m2:/root/.m2
+    command: ./mvnw spring-boot:run
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/catalogo?useUnicode=yes&characterEncoding=UTF-8
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: 12345678
+      SPRING_REDIS_HOST: redis
+      SPRING_REDIS_PORT: 6379
+    ports:
+      - "8080:8080"
+    depends_on:
+      - redis
+      - mysql
+
+  redis:
+    image: 'redis:latest'
+    container_name: redis
+    ports:
+      - "6379:6379"
+
+  mysql:
+    image: 'mysql:8.0'
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 12345678
+      MYSQL_DATABASE: catalogo
+      MYSQL_USER: root
+      MYSQL_PASSWORD: 12345678
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
