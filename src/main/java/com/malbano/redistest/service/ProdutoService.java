@@ -24,35 +24,34 @@ public class ProdutoService {
         this.produtoRepository = produtoRepository;
     }
 
-    @CacheEvict(value = "produto", key = "#produtoId")
+    @CacheEvict(value = "produtoLista", allEntries = true)
     public void inserirProduto(Produto request){
         produtoRepository.saveAndFlush(request);
-        logger.info("Produto inserido e cache invalidado para ID: {}", request.getProdutoId());
+        logger.info("Produto inserido e cache de lista de produtos invalidado.");
     }
 
-    @CacheEvict(value = "produto", key = "#produtoId")
+    @CacheEvict(value = "produtoLista", allEntries = true)
     public void editarProduto(Produto request, Long produtoId){
         procurarPorId(produtoId);
         produtoRepository.saveAndFlush(request);
-        logger.info("Produto editado e cache invalidado para ID: {}", produtoId);
+        logger.info("Produto editado e cache de lista de produtos invalidado.");
     }
 
-    @CacheEvict(value = "produto", key = "#produtoId")
+    @CacheEvict(value = "produtoLista", allEntries = true)
     public void deletarProduto(Long produtoId){
         Produto produto = procurarPorId(produtoId);
         produtoRepository.delete(produto);
-        logger.info("Produto deletado e cache invalidado para ID: {}", produtoId);
-    }
-
-    @Cacheable(value = "produto", key = "#produtoId")
-    public Produto procurarPorId(Long produtoId){
-        logger.info("Buscando produto pelo ID: {}. (Se este log aparecer, o dado não estava no cache)", produtoId);
-        return produtoRepository.findById(produtoId).orElseThrow(() -> new NotFoundException("Produto não encontrado"));
+        logger.info("Produto deletado e cache de lista de produtos invalidado.");
     }
 
     @Cacheable(value = "produtoLista")
     public List<Produto> listarProdutos(){
         logger.info("Buscando lista de produtos. (Se este log aparecer, os dados não estavam no cache)");
         return produtoRepository.findAll();
+    }
+
+    public Produto procurarPorId(Long produtoId){
+        logger.info("Buscando produto pelo ID: {}. (Se este log aparecer, o dado não estava no cache)", produtoId);
+        return produtoRepository.findById(produtoId).orElseThrow(() -> new NotFoundException("Produto não encontrado"));
     }
 }

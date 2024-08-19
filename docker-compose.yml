@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   app:
-    image: 'eclipse-temurin:21-jdk'  # Usando a imagem do JDK 21
+    image: 'eclipse-temurin:21-jdk'
     container_name: spring-boot-app
     working_dir: /app
     volumes:
@@ -14,17 +14,23 @@ services:
       SPRING_DATASOURCE_PASSWORD: 12345678
       SPRING_REDIS_HOST: redis
       SPRING_REDIS_PORT: 6379
+      SPRING_REDIS_PASSWORD: your_redis_password
     ports:
       - "8080:8080"
     depends_on:
       - redis
       - mysql
+    networks:
+      - app-network
 
   redis:
     image: 'redis:latest'
     container_name: redis
+    command: ["redis-server", "--requirepass", "your_redis_password"]
     ports:
       - "6379:6379"
+    networks:
+      - app-network
 
   mysql:
     image: 'mysql:8.0'
@@ -32,12 +38,16 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: 12345678
       MYSQL_DATABASE: catalogo
-      MYSQL_USER: root
-      MYSQL_PASSWORD: 12345678
     ports:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
+    networks:
+      - app-network
 
 volumes:
   mysql_data:
+
+networks:
+  app-network:
+    driver: bridge
