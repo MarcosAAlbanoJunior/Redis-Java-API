@@ -65,3 +65,6 @@ O arquivo `docker-compose.yml` define os serviços e suas configurações. Ele i
       maior segurança que será **'your_redis_password'**.
       Definimos isso no`docker-compose.yml` na linha 29 e 17.
 
+### Fluxo Redis
+![Fluxo_Redis](imagens/fluxo-redis.png)
+
